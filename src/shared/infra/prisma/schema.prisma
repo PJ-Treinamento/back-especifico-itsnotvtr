@@ -8,13 +8,57 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Users {
-  id         String   @id @default(uuid())
-  name       String   @unique
-  email      String
-  cpf        String
-  phone      String
-  password   String
+model Piu {
+  idpiu      String     @id @default(uuid())
+  texto      String
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  likes      Like[]
+  comments   Comments[]
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+
+  @@map("pius")
+}
+
+model Like {
+  idlike     String   @id @default(uuid())
+  userId     String
+  piuId      String
+  piu        Piu      @relation(fields: [piuId], references: [idpiu], onDelete: Cascade, onUpdate: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("likes")
+}
+
+model Comments {
+  idcomment  String   @id @default(uuid())
+  userId     String
+  piuId      String
+  texto      String
+  piu        Piu      @relation(fields: [piuId], references: [idpiu], onDelete: Cascade, onUpdate: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("comments")
+}
+
+model User {
+  id         String     @id @default(uuid())
+  name       String
+  email      String     @unique
+  password   String
+  phone      String
+  cpf        String     @unique
+  nascimento DateTime
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  pius       Piu[]
+  likes      Like[]
+  comments   Comments[]
+
+  @@map("user")
 }
