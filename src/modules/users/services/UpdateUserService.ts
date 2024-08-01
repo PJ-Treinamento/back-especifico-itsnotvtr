@@ -32,7 +32,7 @@ export default class UpdateUserService {
 
     const userExists = await this.usersRepository.findByEmailPhoneOrCpf(email, phone, cpf);
 
-    if (userExists) {
+    if (userExists && userExists.id !== id) {
       throw new AppError('User with the same email, phone, or CPF already exists.');
     }
 

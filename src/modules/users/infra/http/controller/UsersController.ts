@@ -7,6 +7,7 @@ import ReadAllUserService from '@modules/users/services/ReadAllUserService';
 import DeleteUserService from '@modules/users/services/DeleteUserService';
 import ReadUserService from '@modules/users/services/ReadUserService';
 import LoginUserService from '@modules/users/services/LoginUserService';
+import SendEmailWelcomeService from '@modules/users/services/SendEmailWelcomeService';
 
 export default class UserController {
   public async create(req: Request, res: Response): Promise<Response> {
@@ -29,6 +30,13 @@ export default class UserController {
       password,
       nascimento,
     });
+
+    const sendEmailWelcome = container.resolve(SendEmailWelcomeService);
+    await sendEmailWelcome.execute({
+      to: email,
+      name,
+    });
+
 
     return res.status(200).json(user);
   }

@@ -6,6 +6,7 @@ import sessionsRoutes from '@modules/users/infra/http/routes/sessions.routes';
 
 // Pius
 import piusRoutes from '@modules/pius/infra/http/routes/pius.routes';
+import emailsRoutes from '@modules/users/infra/http/routes/emails.routes';
 
 const routes = Router();
 
@@ -15,5 +16,8 @@ routes.use('/sessions', sessionsRoutes);
 
 // Pius
 routes.use('/pius', piusRoutes);
+
+//Emails
+routes.use('/emails', emailsRoutes);
 
 export default routes;

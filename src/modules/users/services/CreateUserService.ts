@@ -3,6 +3,8 @@ import { User } from '@prisma/client';
 import AppError from '@shared/errors/AppError';
 import IUsersRepository from '../repositories/IUsersRepository';
 import { hash } from 'bcryptjs';
+import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
+import path from 'path';
 
 interface IRequest {
   name: string;
@@ -18,6 +20,10 @@ export default class CreateUserService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+  
+    @inject('MailProvider')
+    private mailProvider: IMailProvider,
+
   ) {}
 
   public async execute({
@@ -43,6 +49,24 @@ export default class CreateUserService {
       phone,
       password: hashedPassword,
       nascimento,
+    });
+
+    await this.mailProvider.sendMail({
+      from: {
+        email: 'vtr.victor04@gmail.com',
+        name: 'No Reply',
+      },
+      to: {
+        email,
+        name,
+      },
+      subject: 'Boas-vindas!',
+      templateData: {
+        file: path.resolve( __dirname, '..', 'views', 'create_account.hbs'),
+        variables: {
+          name,
+        },
+      },
     });
 
     return user;
